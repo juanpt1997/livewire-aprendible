@@ -2,7 +2,7 @@
     {{-- The best athlete wants his opponent at his best. --}}
     <h1>Listado de artículos</h1>
 
-    <h2>Tags: @json($tags)</h2>
+    {{-- <h2>Tags: @json($tags)</h2>
     <div>
         <label for="">
             Tag 1
@@ -16,10 +16,9 @@
         <input wire:model="tags" type="checkbox" value="tag2">
     </div>
     <h2>Category: @json($category)</h2>
-    <input type="text" wire:model="category.name">
+    <input type="text" wire:model="category.name"> --}}
 
-
-    {{-- <input type="text" wire:model="category"> --}}
+    <input type="text" wire:model="search" placeholder="Buscar...">
 
     <ul>
         @foreach ($articles as $article)

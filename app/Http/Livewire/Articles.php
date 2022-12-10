@@ -7,12 +7,12 @@ use Livewire\Component;
 
 class Articles extends Component
 {
-    public array $tags = [];
-    public array $category = ['name' => ''];
-    // public $search;
+    // public array $tags = [];
+    // public array $category = ['name' => ''];
+    public $search = '';
 
     public function render()
     {
-        return view('livewire.articles', ['articles' => Article::all()]);
+        return view('livewire.articles', ['articles' => Article::where('title', 'like', "%{$this->search}%")->get()]);
     }
 }
