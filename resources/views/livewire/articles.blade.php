@@ -23,7 +23,7 @@
 
     <ul>
         @foreach ($articles as $article)
-            <li>{{ $article->title }}</li>
+            <li><a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a></li>
         @endforeach
     </ul>
 </div>
