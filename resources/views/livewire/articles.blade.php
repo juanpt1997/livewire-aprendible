@@ -1,6 +1,7 @@
 <div>
     {{-- The best athlete wants his opponent at his best. --}}
     <h1>Listado de artículos</h1>
+    <a href="{{ route('articles.create') }}">Create</a>
 
     {{-- <h2>Tags: @json($tags)</h2>
     <div>
