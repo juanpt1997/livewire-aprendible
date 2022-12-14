@@ -13,6 +13,17 @@ class ArticleFormTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function article_form_renders_properly()
+    {
+        // testing articles.create
+        $this->get(route('articles.create'))->assertSeeLivewire('article-form');
+
+        // testing articles.edit
+        $article = Article::factory()->create();
+        $this->get(route('articles.edit', $article))->assertSeeLivewire('article-form');
+    }
+
+    /** @test */
     public function can_create_new_articles()
     {
         Livewire::test('article-form')
