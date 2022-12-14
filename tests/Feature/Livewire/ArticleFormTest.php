@@ -49,7 +49,7 @@ class ArticleFormTest extends TestCase
             ->set('article.title', 'Ar') // Passing title with 4 chars or less
             ->set('article.content', 'Article content') // Passing content
             ->call('save')
-            ->assertHasErrors(['article.title' => 'min:4']) // Check specific error
+            ->assertHasErrors(['article.title' => 'min']) // Check specific error
             ;
     }
 
@@ -61,5 +61,29 @@ class ArticleFormTest extends TestCase
             ->call('save')
             ->assertHasErrors(['article.content' => 'required']) // Check specific error
             ;
+    }
+
+    /** @test */
+    public function real_time_validation_works_for_title()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', '')
+            ->assertHasErrors(['article.title' => 'required']) // Check errors without saving
+            ->set('article.title', 'New')
+            ->assertHasErrors(['article.title' => 'min']) // Immediately we can check other validation error
+            ->set('article.title', 'New article')
+            ->assertHasNoErrors('article.title') // At the end we check if it has no errors writing something that pass validation
+        ;
+    }
+
+    /** @test */
+    public function real_time_validation_works_for_content()
+    {
+        Livewire::test('article-form')
+            ->set('article.content', '')
+            ->assertHasErrors(['article.content' => 'required'])
+            ->set('article.content', 'Article content')
+            ->assertHasNoErrors('article.content')
+        ;
     }
 }
