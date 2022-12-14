@@ -4,6 +4,7 @@ namespace Tests\Feature\Livewire;
 
 use Tests\TestCase;
 use Livewire\Livewire;
+use App\Models\Article;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -27,6 +28,30 @@ class ArticleFormTest extends TestCase
             [
                 'title' => 'New article',
                 'content' => 'Article content'
+            ]
+        );
+    }
+
+    /** @test */
+    public function can_update_articles()
+    {
+        $article = Article::factory()->create(); // We need a previous article created
+
+        Livewire::test('article-form', ['article' => $article]) // Initialize component
+            ->assertSet('article.title', $article->title) // Check if a property is already set
+            ->assertSet('article.content', $article->content) // Check if a property is already set
+            ->set('article.title', 'Updated title') // Set new title
+            ->call('save') // Call save method
+            ->assertSessionHas('status') // Check if it has the status message
+            ->assertRedirect(route('articles.index')) // Check if redirects to articles index
+        ;
+
+        $this->assertDatabaseCount('articles', 1);
+
+        $this->assertDatabaseHas(
+            'articles',
+            [
+                'title' => 'Updated title'
             ]
         );
     }
