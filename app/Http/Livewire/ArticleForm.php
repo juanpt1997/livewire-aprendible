@@ -7,11 +7,12 @@ use Livewire\Component;
 
 class ArticleForm extends Component
 {
-    public $title;
-    public $content;
+    // public $title;
+    // public $content;
+    public Article $article;
 
-    protected $rules = ['title' => 'required|min:4',
-                        'content' => 'required'];
+    protected $rules = ['article.title' => 'required|min:4',
+                        'article.content' => 'required'];
 
     // ? These custom messages should be written directly on translation files
     // protected $messages = [
@@ -20,6 +21,11 @@ class ArticleForm extends Component
     // protected $validationAttributes = [
     //     'title' => 'Título'
     // ];
+
+    public function mount(Article $article)
+    {
+        $this->article = $article;
+    }
 
     public function updated($propertyName)
     {
@@ -38,10 +44,11 @@ class ArticleForm extends Component
         // $article->title = $this->title;
         // $article->content = $this->content;
         // $article->save();
-        Article::create($data);
+        // Article::create($data); // This will no longer be used because we defined model as a property
+        $this->article->save();
 
         // $this->reset();
-        session()->flash('status', __('Article created.'));
+        session()->flash('status', __('Article saved.'));
         $this->redirectRoute('articles.index');
     }
 

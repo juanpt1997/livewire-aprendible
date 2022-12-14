@@ -4,16 +4,16 @@
     <form wire:submit.prevent='save'>
         <div>
             <label for=""></label>
-            <input wire:model='title' type="text" placeholder="Título">
-            @error('title')
+            <input wire:model='article.title' type="text" placeholder="Título">
+            @error('article.title')
                 <div>{{ $message }}</div>
             @enderror
         </div>
 
         <div>
             <label for=""></label>
-            <textarea wire:model='content' placeholder="Contenido" id="" cols="30" rows="10"></textarea>
-            @error('content')
+            <textarea wire:model='article.content' placeholder="Contenido" id="" cols="30" rows="10"></textarea>
+            @error('article.content')
                 <div>{{ $message }}</div>
             @enderror
         </div>
