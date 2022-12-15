@@ -24,9 +24,22 @@ class ArticleFormTest extends TestCase
     }
 
     /** @test */
+    public function blade_template_is_wired_properly()
+    {
+        Livewire::test('article-form')
+            ->assertSeeHtml("wire:submit.prevent='save'")
+            ->assertSeeHtml("wire:model='article.title'")
+            ->assertSeeHtml("wire:model='article.content'")
+        ;
+    }
+
+    /** @test */
     public function can_create_new_articles()
     {
         Livewire::test('article-form')
+            // ->assertSeeHtml("wire:submit.prevent='save'")
+            // ->assertSeeHtml("wire:model='article.title'")
+            // ->assertSeeHtml("wire:model='article.content'") // ! Moving to another test
             ->set('article.title', 'New article') // Set properties
             ->set('article.content', 'Article content') // Set properties
             ->call('save') // Call save method
@@ -75,6 +88,7 @@ class ArticleFormTest extends TestCase
             ->call('save')
             // ->assertHasErrors('article.title') // Check errors
             ->assertHasErrors(['article.title' => 'required']) // Check specific error
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'title'])) // Check not only error is returned but also it is shown to the user
             ;
     }
 
@@ -86,6 +100,10 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content') // Passing content
             ->call('save')
             ->assertHasErrors(['article.title' => 'min']) // Check specific error
+            ->assertSeeHtml(__('validation.min.string', [
+                'attribute' => 'title',
+                'min' => 4
+                ])) // Check not only error is returned but also it is shown to the user
             ;
     }
 
@@ -96,6 +114,7 @@ class ArticleFormTest extends TestCase
             ->set('article.title', 'New article') // Passing title without content to check validation is ok
             ->call('save')
             ->assertHasErrors(['article.content' => 'required']) // Check specific error
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'content'])) // Check not only error is returned but also it is shown to the user
             ;
     }
 
