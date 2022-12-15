@@ -12,6 +12,14 @@
 
         <div>
             <label for=""></label>
+            <input wire:model='article.slug' type="text" placeholder="Url amigable">
+            @error('article.slug')
+                <div>{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div>
+            <label for=""></label>
             <textarea wire:model='article.content' placeholder="Contenido" id="" cols="30" rows="10"></textarea>
             @error('article.content')
                 <div>{{ $message }}</div>

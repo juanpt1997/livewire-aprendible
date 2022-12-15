@@ -11,8 +11,19 @@ class ArticleForm extends Component
     // public $content;
     public Article $article;
 
-    protected $rules = ['article.title' => 'required|min:4',
-                        'article.content' => 'required'];
+    // ? We can not concat the id this way, with those parameters we can ignore unique rule when updating same slug
+    // protected $rules = ['article.title' => 'required|min:4',
+    //                     'article.slug' => 'required|unique:articles,slug,' . $this->article->id,
+    //                     'article.content' => 'required'];
+    protected function rules()
+    {
+        return [
+            'article.title' => 'required|min:4',
+            'article.slug' => 'required|unique:articles,slug,' . $this->article->id,
+            'article.content' => 'required'
+        ];
+        // Rule::unique('articles', 'slug')->ignore($this->article), // another way to be ignored
+    }
 
     // ? These custom messages should be written directly on translation files
     // protected $messages = [

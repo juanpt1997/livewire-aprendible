@@ -29,6 +29,7 @@ class ArticleFormTest extends TestCase
         Livewire::test('article-form')
             ->assertSeeHtml("wire:submit.prevent='save'")
             ->assertSeeHtml("wire:model='article.title'")
+            ->assertSeeHtml("wire:model='article.slug'")
             ->assertSeeHtml("wire:model='article.content'")
         ;
     }
@@ -41,6 +42,7 @@ class ArticleFormTest extends TestCase
             // ->assertSeeHtml("wire:model='article.title'")
             // ->assertSeeHtml("wire:model='article.content'") // ! Moving to another test
             ->set('article.title', 'New article') // Set properties
+            ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content') // Set properties
             ->call('save') // Call save method
             ->assertSessionHas('status') // Check if it has the status message
@@ -51,6 +53,7 @@ class ArticleFormTest extends TestCase
             'articles',
             [
                 'title' => 'New article',
+                'slug' => 'new-article',
                 'content' => 'Article content'
             ]
         );
@@ -63,8 +66,10 @@ class ArticleFormTest extends TestCase
 
         Livewire::test('article-form', ['article' => $article]) // Initialize component
             ->assertSet('article.title', $article->title) // Check if a property is already set
+            ->assertSet('article.slug', $article->slug)
             ->assertSet('article.content', $article->content) // Check if a property is already set
             ->set('article.title', 'Updated title') // Set new title
+            ->set('article.slug', 'updated-slug') // Set new slug
             ->call('save') // Call save method
             ->assertSessionHas('status') // Check if it has the status message
             ->assertRedirect(route('articles.index')) // Check if redirects to articles index
@@ -75,7 +80,8 @@ class ArticleFormTest extends TestCase
         $this->assertDatabaseHas(
             'articles',
             [
-                'title' => 'Updated title'
+                'title' => 'Updated title',
+                'slug' => 'updated-slug'
             ]
         );
     }
@@ -89,6 +95,47 @@ class ArticleFormTest extends TestCase
             // ->assertHasErrors('article.title') // Check errors
             ->assertHasErrors(['article.title' => 'required']) // Check specific error
             ->assertSeeHtml(__('validation.required', ['attribute' => 'title'])) // Check not only error is returned but also it is shown to the user
+            ;
+    }
+
+    /** @test */
+    public function slug_is_required()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
+            ->set('article.content', 'Article Content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'required']) // Check specific error
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'slug'])) // Check not only error is returned but also it is shown to the user
+            ;
+    }
+
+    /** @test */
+    public function slug_must_be_unique()
+    {
+        $article = Article::factory()->create();
+
+        Livewire::test('article-form')
+            ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
+            ->set('article.slug', $article->slug)
+            ->set('article.content', 'Article Content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'unique']) // Check specific error
+            ->assertSeeHtml(__('validation.unique', ['attribute' => 'slug'])) // Check not only error is returned but also it is shown to the user
+            ;
+    }
+
+    /** @test */
+    public function unique_rule_must_be_ignored_when_updating_the_same_slug()
+    {
+        $article = Article::factory()->create();
+
+        Livewire::test('article-form', ['article' => $article])
+            ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
+            ->set('article.slug', $article->slug)
+            ->set('article.content', 'Article Content')
+            ->call('save')
+            ->assertHasNoErrors(['article.slug' => 'unique']) // Check specific error
             ;
     }
 
