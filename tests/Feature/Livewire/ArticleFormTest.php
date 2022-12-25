@@ -104,6 +104,7 @@ class ArticleFormTest extends TestCase
         Livewire::test('article-form')
             ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
             ->set('article.content', 'Article Content')
+            ->set('article.slug', null)
             ->call('save')
             ->assertHasErrors(['article.slug' => 'required']) // Check specific error
             ->assertSeeHtml(__('validation.required', ['attribute' => 'slug'])) // Check not only error is returned but also it is shown to the user
@@ -122,6 +123,19 @@ class ArticleFormTest extends TestCase
             ->call('save')
             ->assertHasErrors(['article.slug' => 'unique']) // Check specific error
             ->assertSeeHtml(__('validation.unique', ['attribute' => 'slug'])) // Check not only error is returned but also it is shown to the user
+            ;
+    }
+
+    /** @test */
+    public function slug_must_only_contain_letters_numbers_dashes_and_underscores()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
+            ->set('article.slug', 'new-article$%&')
+            ->set('article.content', 'Article Content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'alpha_dash']) // Check specific error
+            ->assertSeeHtml(__('validation.alpha_dash', ['attribute' => 'slug'])) // Check not only error is returned but also it is shown to the user
             ;
     }
 
@@ -187,5 +201,13 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content')
             ->assertHasNoErrors('article.content')
         ;
+    }
+
+    /** @test */
+    public function slug_is_generated_automatically()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'New article')
+            ->assertSet('article.slug', 'new-article');
     }
 }

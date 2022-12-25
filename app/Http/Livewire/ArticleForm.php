@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Article;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class ArticleForm extends Component
 {
@@ -19,7 +20,7 @@ class ArticleForm extends Component
     {
         return [
             'article.title' => 'required|min:4',
-            'article.slug' => 'required|unique:articles,slug,' . $this->article->id,
+            'article.slug' => 'required|alpha_dash|unique:articles,slug,' . $this->article->id,
             'article.content' => 'required'
         ];
         // Rule::unique('articles', 'slug')->ignore($this->article), // another way to be ignored
@@ -41,6 +42,11 @@ class ArticleForm extends Component
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName); // We only want to validate one specific field
+    }
+
+    public function updatedArticleTitle($title) // Because title is contained inside article
+    {
+        $this->article->slug = Str::slug($title);
     }
 
     public function save()
