@@ -3,6 +3,7 @@
 namespace Tests\Feature\Livewire;
 
 use Tests\TestCase;
+use App\Models\User;
 use Livewire\Livewire;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,19 +14,35 @@ class ArticleFormTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function article_form_renders_properly()
+    public function guests_cannot_create_or_update_articles()
     {
+        // $this->withoutExceptionHandling();
         // testing articles.create
-        $this->get(route('articles.create'))->assertSeeLivewire('article-form');
+        $this->get(route('articles.create'))->assertRedirect('login');
 
         // testing articles.edit
         $article = Article::factory()->create();
-        $this->get(route('articles.edit', $article))->assertSeeLivewire('article-form');
+        $this->get(route('articles.edit', $article))->assertRedirect('login');
+    }
+
+    /** @test */
+    public function article_form_renders_properly()
+    {
+        // This test will now fail because an unauthenticated user is trying to access that route
+        $user = User::factory()->create();
+
+        // testing articles.create
+        $this->actingAs($user)->get(route('articles.create'))->assertSeeLivewire('article-form');
+
+        // testing articles.edit
+        $article = Article::factory()->create();
+        $this->actingAs($user)->get(route('articles.edit', $article))->assertSeeLivewire('article-form');
     }
 
     /** @test */
     public function blade_template_is_wired_properly()
     {
+        // Livewire::actingAs(User::factory()->create())->test('article-form')
         Livewire::test('article-form')
             ->assertSeeHtml("wire:submit.prevent='save'")
             ->assertSeeHtml("wire:model='article.title'")

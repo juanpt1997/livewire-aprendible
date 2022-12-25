@@ -71,6 +71,10 @@ class ArticleForm extends Component
 
     public function render()
     {
+        // ! But we are only going to render components through routes so this is not necessary
+        // if (Auth::guest()){
+        //     $this->redirectRoute('login');
+        // }
         return view('livewire.article-form');
     }
 }
