@@ -54,7 +54,9 @@ class ArticleFormTest extends TestCase
     /** @test */
     public function can_create_new_articles()
     {
-        Livewire::test('article-form')
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)->test('article-form')
             // ->assertSeeHtml("wire:submit.prevent='save'")
             // ->assertSeeHtml("wire:model='article.title'")
             // ->assertSeeHtml("wire:model='article.content'") // ! Moving to another test
@@ -71,7 +73,8 @@ class ArticleFormTest extends TestCase
             [
                 'title' => 'New article',
                 'slug' => 'new-article',
-                'content' => 'Article content'
+                'content' => 'Article content',
+                'user_id' => $user->id
             ]
         );
     }
@@ -81,7 +84,10 @@ class ArticleFormTest extends TestCase
     {
         $article = Article::factory()->create(); // We need a previous article created
 
-        Livewire::test('article-form', ['article' => $article]) // Initialize component
+        // $user = User::factory()->create();
+        $user = User::find($article->user_id);
+
+        Livewire::actingAs($user)->test('article-form', ['article' => $article]) // Initialize component
             ->assertSet('article.title', $article->title) // Check if a property is already set
             ->assertSet('article.slug', $article->slug)
             ->assertSet('article.content', $article->content) // Check if a property is already set
@@ -98,7 +104,8 @@ class ArticleFormTest extends TestCase
             'articles',
             [
                 'title' => 'Updated title',
-                'slug' => 'updated-slug'
+                'slug' => 'updated-slug',
+                'user_id' => $user->id
             ]
         );
     }
@@ -161,7 +168,9 @@ class ArticleFormTest extends TestCase
     {
         $article = Article::factory()->create();
 
-        Livewire::test('article-form', ['article' => $article])
+        $user = User::find($article->user_id);
+
+        Livewire::actingAs($user)->test('article-form', ['article' => $article])
             ->set('article.title', 'Article Title') // Passing content without title to check validation is ok
             ->set('article.slug', $article->slug)
             ->set('article.content', 'Article Content')

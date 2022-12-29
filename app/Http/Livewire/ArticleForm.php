@@ -62,7 +62,10 @@ class ArticleForm extends Component
         // $article->content = $this->content;
         // $article->save();
         // Article::create($data); // This will no longer be used because we defined model as a property
-        $this->article->save();
+        // ? Also if we want save user_id we can set it to the article or we can use the relationship from model
+        // $this->article->user_id = auth()->id();
+        // $this->article->save();
+        auth()->user()->articles()->save($this->article);
 
         // $this->reset();
         session()->flash('status', __('Article saved.'));
