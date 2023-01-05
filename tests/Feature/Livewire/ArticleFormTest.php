@@ -44,10 +44,10 @@ class ArticleFormTest extends TestCase
     {
         // Livewire::actingAs(User::factory()->create())->test('article-form')
         Livewire::test('article-form')
-            ->assertSeeHtml("wire:submit.prevent='save'")
-            ->assertSeeHtml("wire:model='article.title'")
-            ->assertSeeHtml("wire:model='article.slug'")
-            ->assertSeeHtml("wire:model='article.content'")
+            ->assertSeeHtml('wire:submit.prevent="save"')
+            ->assertSeeHtml('wire:model="article.title"')
+            ->assertSeeHtml('wire:model="article.slug"')
+            ->assertSeeHtml('wire:model="article.content"')
         ;
     }
 
