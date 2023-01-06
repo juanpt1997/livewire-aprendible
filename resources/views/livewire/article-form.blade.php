@@ -30,7 +30,8 @@
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-jet-label for="content" :value="__('Content')" />
-                        <x-textarea wire:model='article.content' id="content" class="mt-1 w-full block" />
+                        <x-html-editor wire:model='article.content' id="content" class="mt-1 w-full block" />
+                        {{-- <x-textarea wire:model='article.content' id="content" class="mt-1 w-full block" /> --}}
                         <x-jet-input-error for='article.content' class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">
